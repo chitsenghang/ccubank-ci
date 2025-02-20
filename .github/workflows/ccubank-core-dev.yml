@@ -71,6 +71,10 @@ jobs:
           chmod +x scripts/setup_ssh.sh
           ./scripts/setup_ssh.sh
 
+      - name: Test SSH Connection
+        run: |
+          ssh -v -o StrictHostKeyChecking=no root@${{ secrets.WEB_SERVER_SSH_HOST }} 'echo "SSH connection test"'
+
       - name: Server deployment
         env:
           WEB_SERVER_SSH_HOST: ${{ secrets.WEB_SERVER_SSH_HOST }}
