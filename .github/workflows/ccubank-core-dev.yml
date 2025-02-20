@@ -43,7 +43,6 @@ jobs:
 
       - name: Build image
         run: |
-          chmod +x scripts/create_env.sh ./scripts/create_env.sh
           docker build -t sjc.vultrcr.com/hangregistry469/ccubank-core:latest -f Dockerfile .
 
       - name: Push image to registry
@@ -64,7 +63,10 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           WEB_SERVER_SSH_HOST: ${{ secrets.WEB_SERVER_SSH_HOST }}
+          COMPOSE_FILE_DIR: /root/hang/ccubank
+          COMPOSE_FILE_NAME: docker-compose.development.yaml
         run: |
+          chmod +x scripts/create_env.sh ./scripts/create_env.sh
           chmod +x ./scripts/setup_ssh.sh
 
       - name: Server deployment

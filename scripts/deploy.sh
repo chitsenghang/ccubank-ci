@@ -1,12 +1,13 @@
 #!/bin/bash
+scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/hang/null -r ./docker-compose.yaml $WEB_SERVER_SSH_HOST:$COMPOSE_FILE_DIR/$COMPOSE_FILE_NAME
 
-REGISTRY="sjc.vultrcr.com"
-IMAGE_NAME="hangregistry469/ccubank-core"
-TAG="latest"
-CONTAINER_NAME="ccubank-core"
-
-echo "Pulling the latest image from $REGISTRY/$IMAGE_NAME:$TAG..."
-docker pull $REGISTRY/$IMAGE_NAME:$TAG
+#REGISTRY="sjc.vultrcr.com"
+#IMAGE_NAME="hangregistry469/ccubank-core"
+#TAG="latest"
+#CONTAINER_NAME="ccubank-core"
+#
+#echo "Pulling the latest image from $REGISTRY/$IMAGE_NAME:$TAG..."
+#docker pull $REGISTRY/$IMAGE_NAME:$TAG
 
 #echo "Stopping and removing any existing container..."
 #docker stop $CONTAINER_NAME || true
