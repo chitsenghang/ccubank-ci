@@ -3,11 +3,6 @@ name: ccubank-core
 on:
   push:
     branches: [main]
-#env:
-#  NODE_VERSION: "20.18.2"
-#  REGISTRY: ${{ secrets.REGISTRY }}
-#  REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
-#  REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
 
 jobs:
   lint:
@@ -42,8 +37,8 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: ${{ secrets.REGISTRY }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - name: Echo after login to Registry
         run: echo "Login to Registry successful"
