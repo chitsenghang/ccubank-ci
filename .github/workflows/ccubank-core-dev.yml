@@ -65,4 +65,6 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           WEB_SERVER_SSH_HOST: ${{ secrets.WEB_SERVER_SSH_HOST }}
           DEPLOY_SCRIPT_PATH: /scripts/deploy.sh
+        run: |
+          ssh $WEB_SERVER_SSH_HOST "bash -s" < $DEPLOY_SCRIPT_PATH
 
