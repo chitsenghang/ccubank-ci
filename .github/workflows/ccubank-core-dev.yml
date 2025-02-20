@@ -66,5 +66,6 @@ jobs:
           WEB_SERVER_SSH_HOST: ${{ secrets.WEB_SERVER_SSH_HOST }}
           DEPLOY_SCRIPT_PATH: /scripts/deploy.sh
         run: |
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ./scripts/deploy.sh ${{ secrets.WEB_SERVER_SSH_HOST}}:/tmp/deploy.sh
           ssh $WEB_SERVER_SSH_HOST "bash -s" < $DEPLOY_SCRIPT_PATH
 
