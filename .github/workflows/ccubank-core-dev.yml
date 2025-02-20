@@ -41,6 +41,11 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
+      - name: build image
+        run: |
+          ./scripts/create_env.sh
+          docker build -t sjc.vultrcr.com/hangregistry469/ccubank-core:latest -f Dockerfile .
+
       - name: Echo after login to Registry
         run: echo "Login to Registry successful"
 
