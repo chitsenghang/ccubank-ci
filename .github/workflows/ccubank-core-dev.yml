@@ -63,13 +63,14 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Remote to server
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           chmod +x scripts/create_env.sh ./scripts/create_env.sh
           chmod +x ./scripts/setup_ssh.sh
 
       - name: Server deployment
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           WEB_SERVER_SSH_HOST: ${{ secrets.WEB_SERVER_SSH_HOST }}
           COMPOSE_FILE_DIR: /root/ccubank
           COMPOSE_FILE_NAME: docker-compose.development.yaml
