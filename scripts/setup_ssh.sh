@@ -1,16 +1,15 @@
 #!/bin/bash
 
+# Create .ssh directory and set correct permissions
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
-echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-echo "SSH_PRIVATE_KEY" | \
-  sed 's/-----BEGIN RSA PRIVATE KEY-----//g' | \
-  sed 's/-----END RSA PRIVATE KEY-----//g' | \
-  sed 's/ /\n/g' | \
-  sed '1s/^/-----BEGIN RSA PRIVATE KEY-----\n/' > server-private-key.pem
-echo -n "-----END RSA PRIVATE KEY-----" >> server-private-key.pem
-chmod 600 server-private-key.pem
-cp server-private-key.pem ~/.ssh/id_rsa
+
+# Write the private key to a file
+echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
-rm -f server-private-key.pem
-echo "SSH private key setup completed and stored at ~/.ssh/id_rsa"
+
+# Add host to known_hosts to prevent interactive confirmation
+ssh-keyscan -H "${WEB_SERVER_SSH_HOST}" >> ~/.ssh/known_hosts
+chmod 644 ~/.ssh/known_hosts
+
+echo "✅ SSH private key setup completed."

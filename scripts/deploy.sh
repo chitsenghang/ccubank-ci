@@ -6,12 +6,6 @@ if [[ ! -f ./docker-compose.development.yml ]]; then
     exit 1
 fi
 
-# Copy the compose file to the server
-mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H "${{ secrets.WEB_SERVER_SSH_HOST }}" >> ~/.ssh/known_hosts
-
 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ./docker-compose.development.yml $WEB_SERVER_SSH_HOST:$COMPOSE_FILE_DIR/$COMPOSE_FILE_NAME
 
 # Execute deployment commands on the remote server
