@@ -1,4 +1,4 @@
-name: ccubank-core
+name: Sequential Actions
 
 on:
   push:
