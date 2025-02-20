@@ -43,7 +43,7 @@ jobs:
 
       - name: build image
         run: |
-          ./scripts/create_env.sh
+          chmod +x scripts/create_env.sh ./scripts/create_env.sh
           docker build -t sjc.vultrcr.com/hangregistry469/ccubank-core:latest -f Dockerfile .
 
       - name: Echo after login to Registry
