@@ -30,9 +30,6 @@ jobs:
 
   build:
     run-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
 
     steps:
       - name: Checkout Repository
