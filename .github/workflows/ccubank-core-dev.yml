@@ -65,7 +65,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           WEB_SERVER_SSH_HOST: ${{ secrets.WEB_SERVER_SSH_HOST }}
         run: |
-          ./scripts/setup_ssh.sh
+          chmod +x ./scripts/setup_ssh.sh
 
       - name: Server deployment
         run: bash ./scripts/deploy.sh
