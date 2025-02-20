@@ -1,15 +1,5 @@
 #!/bin/bash
 
-if [ -z "$COMPOSE_FILE_DIR" ]; then
-  echo "COMPOSE_FILE_DIR is not set. Please set it before running the script."
-  exit 1
-fi
-
-if [ -z "$COMPOSE_FILE_NAME" ]; then
-  echo "COMPOSE_FILE_NAME is not set. Please set it before running the script."
-  exit 1
-fi
-
 echo "Ensuring the compose directory exists on the server..."
 ssh -o StrictHostKeyChecking=no "$WEB_SERVER_SSH_HOST" "mkdir -p $COMPOSE_FILE_DIR"
 

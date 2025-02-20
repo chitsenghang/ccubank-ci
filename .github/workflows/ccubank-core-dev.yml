@@ -23,38 +23,38 @@ jobs:
 #      - name: Run Lint
 #        run: yarn lint
 
-  build:
-    runs-on: ubuntu-latest
-#    needs: lint
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Log in to Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ secrets.REGISTRY }}
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
-
-      - name: Build image
-        run: |
-          docker build -t sjc.vultrcr.com/hangregistry469/ccubank-core:latest -f Dockerfile .
-
-      - name: Push image to registry
-        run: |
-          echo ${{ secrets.REGISTRY_PASSWORD }} | docker login sjc.vultrcr.com -u ${{ secrets.REGISTRY_USERNAME }} --password-stdin
-          docker push sjc.vultrcr.com/hangregistry469/ccubank-core:latest
-          docker image prune -f
-          docker logout ${{ secrets.REGISTRY }}
+#  build:
+#    runs-on: ubuntu-latest
+##    needs: lint
+#    permissions:
+#      contents: read
+#      packages: write
+#
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v3
+#
+#      - name: Log in to Registry
+#        uses: docker/login-action@v2
+#        with:
+#          registry: ${{ secrets.REGISTRY }}
+#          username: ${{ secrets.REGISTRY_USERNAME }}
+#          password: ${{ secrets.REGISTRY_PASSWORD }}
+#
+#      - name: Build image
+#        run: |
+#          docker build -t sjc.vultrcr.com/hangregistry469/ccubank-core:latest -f Dockerfile .
+#
+#      - name: Push image to registry
+#        run: |
+#          echo ${{ secrets.REGISTRY_PASSWORD }} | docker login sjc.vultrcr.com -u ${{ secrets.REGISTRY_USERNAME }} --password-stdin
+#          docker push sjc.vultrcr.com/hangregistry469/ccubank-core:latest
+#          docker image prune -f
+#          docker logout ${{ secrets.REGISTRY }}
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build
+#    needs: build
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
