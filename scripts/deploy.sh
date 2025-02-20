@@ -4,7 +4,7 @@ echo "Ensuring the compose directory exists on the server..."
 ssh -o StrictHostKeyChecking=no "$WEB_SERVER_SSH_HOST" "mkdir -p $COMPOSE_FILE_DIR"
 
 echo "Copying docker-compose.yaml and necessary files to the server..."
-scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/hang/null -r ./docker-compose.yaml $WEB_SERVER_SSH_HOST:$COMPOSE_FILE_DIR/$COMPOSE_FILE_NAME
+scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/hang/null -r ./$COMPOSE_FILE_NAME $WEB_SERVER_SSH_HOST:$COMPOSE_FILE_DIR/$COMPOSE_FILE_NAME
 
 #REGISTRY="sjc.vultrcr.com"
 #IMAGE_NAME="hangregistry469/ccubank-core"
