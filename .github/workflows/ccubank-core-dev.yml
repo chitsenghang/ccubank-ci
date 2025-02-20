@@ -46,6 +46,13 @@ jobs:
           chmod +x scripts/create_env.sh ./scripts/create_env.sh
           docker build -t sjc.vultrcr.com/hangregistry469/ccubank-core:latest -f Dockerfile .
 
+      - name: push image to registry
+        run: |
+          echo ${{ secrets.REGISTRY_PASSWORD }} | docker login sjc.vultrcr.com -u ${{ secrets.REGISTRY_USERNAME }} --password-stdin
+          docker push sjc.vultrcr.com/hangregistry469/ccubank-core:latest
+          docker image prune -f
+          docker logout ${{ secrets.REGISTRY }}
+
       - name: Echo after login to Registry
         run: echo "Login to Registry successful"
 
