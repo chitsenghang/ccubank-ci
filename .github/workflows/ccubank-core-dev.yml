@@ -66,8 +66,9 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          chmod +x scripts/create_env.sh ./scripts/create_env.sh
-          chmod +x ./scripts/setup_ssh.sh
+          chmod +x scripts/create_env.sh
+          chmod +x scripts/setup_ssh.sh
+          ./scripts/setup_ssh.sh
 
       - name: Server deployment
         env:
