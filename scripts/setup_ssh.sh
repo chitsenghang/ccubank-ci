@@ -9,7 +9,7 @@ echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
 
 # Add host to known_hosts to prevent interactive confirmation
-ssh-keyscan -H "${WEB_SERVER_SSH_HOST}" >> ~/.ssh/known_hosts
-chmod 644 ~/.ssh/known_hosts
+ssh-keyscan -H "${WEB_SERVER_SSH_HOST}" >> ~/.ssh/id_rsa
+chmod 644 ~/.ssh/id_rsa
 
 echo "✅ SSH private key setup completed."
