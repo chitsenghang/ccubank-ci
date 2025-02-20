@@ -65,6 +65,7 @@ jobs:
       - name: Remote to server
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          WEB_SERVER_SSH_HOST: ${{ secrets.WEB_SERVER_SSH_HOST }}
         run: |
           chmod +x scripts/create_env.sh
           chmod +x scripts/setup_ssh.sh
