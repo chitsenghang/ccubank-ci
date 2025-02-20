@@ -60,12 +60,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Remote to server and deploy
+      - name: Remote to server
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           WEB_SERVER_SSH_HOST: ${{ secrets.WEB_SERVER_SSH_HOST }}
-          DEPLOY_SCRIPT_PATH: /scripts/deploy.sh
         run: |
-          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ./scripts/deploy.sh ${{ secrets.WEB_SERVER_SSH_HOST}}:/tmp/deploy.sh
-          ssh $WEB_SERVER_SSH_HOST "bash -s" < $DEPLOY_SCRIPT_PATH
+          ./scripts/setup_ssh.sh
+
+      - name: Server deployment
+        run: bash ./scripts/deploy.sh
 
