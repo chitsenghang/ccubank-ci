@@ -64,9 +64,12 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           WEB_SERVER_SSH_HOST: ${{ secrets.WEB_SERVER_SSH_HOST }}
 
+      - name: Setup SSH Key
         run: |
-          chmod +x scripts/create_env.sh ./scripts/create_env.sh
-          chmod +x ./scripts/setup_ssh.sh
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "${{ secrets.WEB_SERVER_SSH_HOST }}" >> ~/.ssh/known_hosts
 
       - name: Debug SSH Connection
         run: |
