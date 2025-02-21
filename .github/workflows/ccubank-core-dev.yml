@@ -74,7 +74,7 @@ jobs:
       - name: Server deployment
         env:
           WEB_SERVER_SSH_HOST: ${{ secrets.WEB_SERVER_SSH_HOST }}
-          COMPOSE_FILE_DIR: ./root/ccubank
+          COMPOSE_FILE_DIR: /ccubank
           COMPOSE_FILE_NAME: docker-compose.development.yaml
         run: |
           chmod +x ./scripts/deploy.sh
