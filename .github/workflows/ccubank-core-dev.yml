@@ -67,8 +67,6 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           WEB_SERVER_SSH_HOST: ${{ secrets.WEB_SERVER_SSH_HOST }}
         run: |
-          chmod +x scripts/create_env.sh
-          chmod +x scripts/setup_ssh.sh
           ./scripts/setup_ssh.sh
 
       - name: Server deployment
@@ -77,6 +75,5 @@ jobs:
           COMPOSE_FILE_DIR: ./ccubank
           COMPOSE_FILE_NAME: docker-compose.development.yaml
         run: |
-          chmod +x ./scripts/deploy.sh
           ./scripts/deploy.sh
 
