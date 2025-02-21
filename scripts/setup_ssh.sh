@@ -1,25 +1,22 @@
 #!/bin/bash
+
+# setup_ssh.sh
 set -e
 
-# Ensure the required environment variables are set
-if [[ -z "$SSH_PASSWORD" || -z "$WEB_SERVER_SSH_HOST" ]]; then
-    echo "Error: SSH_PASSWORD or WEB_SERVER_SSH_HOST not set!"
-    exit 1
-fi
+# Extract IP from WEB_SERVER_SSH_HOST
+SERVER_IP=$(echo "$WEB_SERVER_SSH_HOST" | cut -d '@' -f2)
 
-SSH_PASS="$SSH_PASSWORD"
-SSH_HOST="$WEB_SERVER_SSH_HOST"
-
-echo "Installing sshpass..."
-sudo apt-get update && sudo apt-get install -y sshpass
-
-# Setup SSH directory and configuration
+# Create SSH directory
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
 
-# SSH config to prevent interactive prompts
-echo -e "Host *\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile /dev/null\n\n" > ~/.ssh/config
+# Write SSH private key
+echo "$WEB_SERVER_SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+chmod 600 ~/.ssh/id_rsa
 
-# Use sshpass to connect via SSH
-echo "Connecting to the server..."
-sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$SSH_HOST" "echo 'Connected successfully!'"
+# Add host key to known hosts
+ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
+
+# Test SSH connection
+echo "Testing SSH connection..."
+ssh -o BatchMode=yes -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa "$WEB_SERVER_SSH_HOST" "echo 'SSH connection successful'"
