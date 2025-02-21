@@ -55,28 +55,44 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 #    needs: build
-    env:
-      REGISTRY_USERNAME: ${{secrets.REGISTRY_USERNAME}}
-      REGISTRY_TOKEN: ${{secrets.REGISTRY_PASSWORD}}
+#    env:
+#      REGISTRY_USERNAME: ${{secrets.REGISTRY_USERNAME}}
+#      REGISTRY_TOKEN: ${{secrets.REGISTRY_PASSWORD}}
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v3
+#
+#      - name: Remote to server
+#        env:
+#          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+#          WEB_SERVER_SSH_HOST: ${{ secrets.WEB_SERVER_SSH_HOST }}
+#        run: |
+#          chmod +x scripts/create_env.sh
+#          chmod +x scripts/setup_ssh.sh
+#          ./scripts/setup_ssh.sh
+#
+#      - name: Server deployment
+#        env:
+#          WEB_SERVER_SSH_HOST: ${{ secrets.WEB_SERVER_SSH_HOST }}
+#          COMPOSE_FILE_DIR: ./ccubank
+#          COMPOSE_FILE_NAME: docker-compose.development.yaml
+#        run: |
+#          chmod +x ./scripts/deploy.sh
+#          ./scripts/deploy.sh
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Remote to server
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          WEB_SERVER_SSH_HOST: ${{ secrets.WEB_SERVER_SSH_HOST }}
+      - name: Set up SSH key
         run: |
-          chmod +x scripts/create_env.sh
-          chmod +x scripts/setup_ssh.sh
-          ./scripts/setup_ssh.sh
+            mkdir -p ~/.ssh
+            echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+            chmod 600 ~/.ssh/id_rsa
 
-      - name: Server deployment
-        env:
-          WEB_SERVER_SSH_HOST: ${{ secrets.WEB_SERVER_SSH_HOST }}
-          COMPOSE_FILE_DIR: ./ccubank
-          COMPOSE_FILE_NAME: docker-compose.development.yaml
+      - name: Add remote server to known hosts
         run: |
-          chmod +x ./scripts/deploy.sh
-          ./scripts/deploy.sh
+          mkdir -p ~/.ssh
+          ssh-keyscan -H $WEB_SERVER_SSH_HOST >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Test SSH connection
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@$WEB_SERVER_SSH_HOST "echo 'SSH connection successful'"
 
