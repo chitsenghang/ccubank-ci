@@ -17,3 +17,8 @@ ssh-keyscan -H "$WEB_SERVER_SSH_HOST" >> ~/.ssh/known_hosts
 
 # Generate public key for verification
 ssh-keygen -y -f ~/.ssh/id_rsa > ~/.ssh/id_rsa.pub
+
+# Test SSH connection
+ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -vvv root@$WEB_SERVER_SSH_HOST "echo 'SSH connection successful'"
+
+set +x  # Disable debug mode
