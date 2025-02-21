@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x  # Enable debug mode
+set -x
 
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
