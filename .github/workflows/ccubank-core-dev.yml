@@ -58,20 +58,17 @@ jobs:
     env:
       REGISTRY_USERNAME: ${{secrets.REGISTRY_USERNAME}}
       REGISTRY_TOKEN: ${{secrets.REGISTRY_PASSWORD}}
+      WEB_SERVER_SSH_HOST: ${{ secrets.WEB_SERVER_SSH_HOST }}
+      COMPOSE_FILE_DIR: ./ccubank
+      COMPOSE_FILE_NAME: docker-compose.development.yaml
+      $WEB_SERVER_SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Remote to server
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          WEB_SERVER_SSH_HOST: ${{ secrets.WEB_SERVER_SSH_HOST }}
         run: bash ./scripts/setup_ssh.sh
 
       - name: Server deployment
-        env:
-          WEB_SERVER_SSH_HOST: ${{ secrets.WEB_SERVER_SSH_HOST }}
-          COMPOSE_FILE_DIR: ./ccubank
-          COMPOSE_FILE_NAME: docker-compose.development.yaml
         run: bash ./scripts/deploy.sh
 
