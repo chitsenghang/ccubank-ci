@@ -3,9 +3,6 @@
 # Exit on any error
 set -e
 
-# Ensure directory exists on remote server
-ssh -o StrictHostKeyChecking=no root@$WEB_SERVER_SSH_HOST "mkdir -p $COMPOSE_FILE_DIR"
-
 # Copy docker-compose file to server
 scp -o StrictHostKeyChecking=no \
     -r ./docker-compose.development.yaml \
