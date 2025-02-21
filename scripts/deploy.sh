@@ -1,17 +1,13 @@
 #!/bin/bash
-set -e  # Exit on error
+set -x  # Enable debug mode
 
-REMOTE_DIR="/root/ccubank"
-COMPOSE_FILE="docker-compose.development.yaml"
+echo "Checking if /root/ccubank exists..."
+ssh root@hang "ls -la /root/ccubank"
 
-ssh -o StrictHostKeyChecking=no user@${WEB_SERVER_SSH_HOST} << EOF
-    mkdir -p $REMOTE_DIR
-EOF
+echo "Copying files..."
+scp -o StrictHostKeyChecking=no docker-compose.development.yaml root@hang:/root/ccubank/
 
-scp -o StrictHostKeyChecking=no docker-compose.development.yaml root@${WEB_SERVER_SSH_HOST}:$REMOTE_DIR/
+echo "Verifying copied files..."
+ssh root@hang "ls -la /root/ccubank"
 
-ssh -o StrictHostKeyChecking=no user@${WEB_SERVER_SSH_HOST} << EOF
-    cd $REMOTE_DIR
-    docker-compose -f $COMPOSE_FILE pull
-    docker-compose -f $COMPOSE_FILE up -d --remove-orphans
-EOF
+set +x  # Disable debug mode
