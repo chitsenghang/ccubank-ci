@@ -17,11 +17,14 @@ chmod 600 ~/.ssh/id_rsa
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
 
-# Scan and add the server to known_hosts (ensuring safety)
+# Ensure known_hosts file exists
+touch ~/.ssh/known_hosts
+chmod 644 ~/.ssh/known_hosts
+
+# Scan and add the server to known_hosts only if missing
 if ! grep -q "$SERVER_IP" ~/.ssh/known_hosts; then
   ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts 2>/dev/null
 fi
-chmod 644 ~/.ssh/known_hosts
 
 # Test SSH connection
 echo "Testing SSH connection to $WEB_SERVER_SSH_HOST..."
