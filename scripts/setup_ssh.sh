@@ -1,9 +1,15 @@
-mkdir -p ~/.ssh
+#!/bin/bash
+set -e
 
+SSH_PASS="$SSH_PASSWORD"
+SSH_HOST="$WEB_SERVER_SSH_HOST"
+
+apt-get update && apt-get install -y sshpass
+
+mkdir -p ~/.ssh
 chmod 700 ~/.ssh
 
-ssh-keyscan -H $WEB_SERVER_SSH_HOST >> ~/.ssh/known_hosts
+echo -e "Host *\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile /dev/null\n\n" > ~/.ssh/config
 
-echo "$WEB_SERVER_SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-
-chmod 600 ~/.ssh/id_rsa
+echo "Connecting to the server..."
+sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$SSH_HOST" "echo 'Connected successfully!'"

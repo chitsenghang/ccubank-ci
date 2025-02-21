@@ -59,6 +59,7 @@ jobs:
       REGISTRY_USERNAME: ${{secrets.REGISTRY_USERNAME}}
       REGISTRY_TOKEN: ${{secrets.REGISTRY_PASSWORD}}
       WEB_SERVER_SSH_HOST: ${{ secrets.WEB_SERVER_SSH_HOST }}
+      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       COMPOSE_FILE_DIR: ./ccubank
       COMPOSE_FILE_NAME: docker-compose.development.yaml
       $WEB_SERVER_SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
