@@ -10,7 +10,6 @@ fi
 SSH_PASS="$SSH_PASSWORD"
 SSH_HOST="$WEB_SERVER_SSH_HOST"
 
-# Install sshpass if not already installed
 echo "Installing sshpass..."
 sudo apt-get update && sudo apt-get install -y sshpass
 
