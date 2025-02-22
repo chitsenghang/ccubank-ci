@@ -49,4 +49,4 @@ remote_command "cd $COMPOSE_FILE_DIR && \
     docker-compose -f $COMPOSE_FILE_NAME pull && \
     docker-compose -f $COMPOSE_FILE_NAME up -d"
 
-echo "Deployment completed successfully!"
+echo "Deployment completed successfully!!"
