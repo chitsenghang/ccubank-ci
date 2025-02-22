@@ -58,11 +58,11 @@ jobs:
     env:
       REGISTRY_USERNAME: ${{secrets.REGISTRY_USERNAME}}
       REGISTRY_TOKEN: ${{secrets.REGISTRY_PASSWORD}}
-      WEB_SERVER_SSH_HOST: ${{ secrets.WEB_SERVER_SSH_HOST }}
-      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      SERVER_HOST: ${{ secrets.SERVER_HOST }}
+      SERVER_USER: ${{ secrets.SERVER_USER }}
       COMPOSE_FILE_DIR: ./ccubank
       COMPOSE_FILE_NAME: docker-compose.development.yaml
-      WEB_SERVER_SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
