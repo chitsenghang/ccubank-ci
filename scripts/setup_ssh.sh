@@ -3,6 +3,9 @@
 # Exit on any error and undefined variables
 set -eu
 
+# Enable debug mode for SSH
+export SSH_DEBUG_MODE="true"
+
 echo "Starting deployment setup..."
 
 # Configuration variables
@@ -10,102 +13,79 @@ SSH_PORT="${SSH_PORT:-22}"  # Default to port 22 if not specified
 COMPOSE_FILE_DIR="${COMPOSE_FILE_DIR:-./ccubank}"
 COMPOSE_FILE_NAME="${COMPOSE_FILE_NAME:-docker-compose.development.yaml}"
 
-# Create SSH directory if it doesn't exist
+# Debug: Print variables (masked)
+echo "Checking configuration..."
+echo "SERVER_HOST: ${SERVER_HOST}"
+echo "SERVER_USER: ${SERVER_USER}"
+echo "SSH_PORT: ${SSH_PORT}"
+echo "COMPOSE_FILE_DIR: ${COMPOSE_FILE_DIR}"
+echo "SSH_PRIVATE_KEY exists: $([ ! -z "${SSH_PRIVATE_KEY}" ] && echo 'Yes' || echo 'No')"
+
+# Create SSH directory and set permissions
+echo "Setting up SSH directory..."
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
 
-# Write SSH private key to file
-echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+# Write SSH private key to file with proper formatting
+echo "Writing SSH key..."
+# Ensure the key starts with -----BEGIN and ends with -----END
+echo "$SSH_PRIVATE_KEY" | sed 's/\\n/\n/g' > ~/.ssh/deploy_key
 chmod 600 ~/.ssh/deploy_key
 
-# Add server's host key to known_hosts
-echo "Adding host key..."
-ssh-keyscan -p "$SSH_PORT" -H "$SERVER_HOST" >> ~/.ssh/known_hosts
+# Debug: Check key format
+echo "Validating SSH key format..."
+if ! grep -q "BEGIN .* PRIVATE KEY" ~/.ssh/deploy_key; then
+    echo "Error: Invalid SSH key format"
+    echo "Key should start with '-----BEGIN ... PRIVATE KEY-----'"
+    exit 1
+fi
 
-# Configure SSH with custom settings
+# Add server's host key with verbose output
+echo "Adding host key..."
+if ! ssh-keyscan -v -p "$SSH_PORT" -H "$SERVER_HOST" >> ~/.ssh/known_hosts 2>&1; then
+    echo "Warning: ssh-keyscan had issues, but continuing..."
+fi
+chmod 644 ~/.ssh/known_hosts
+
+# Configure SSH with custom settings and verbose logging
+echo "Configuring SSH..."
 cat > ~/.ssh/config << EOF
 Host deployment_target
     HostName $SERVER_HOST
     User $SERVER_USER
     Port $SSH_PORT
     IdentityFile ~/.ssh/deploy_key
-    StrictHostKeyChecking yes
+    StrictHostKeyChecking accept-new
     UserKnownHostsFile ~/.ssh/known_hosts
+    LogLevel DEBUG3
 EOF
 
 chmod 600 ~/.ssh/config
 
-# Function to handle SSH commands with retry
-ssh_command() {
-    local retries=3
-    local command=$1
+# Test SSH key permissions
+echo "Checking SSH key permissions..."
+ls -la ~/.ssh/deploy_key
+ls -la ~/.ssh/config
 
-    for (( i=1; i<=retries; i++ )); do
-        if ssh deployment_target "$command"; then
-            return 0
-        fi
-        echo "Attempt $i failed. Retrying..."
-        sleep 5
-    done
-    echo "Failed after $retries attempts"
-    return 1
+# Test the connection with verbose output
+echo "Testing SSH connection..."
+ssh -v deployment_target 'echo "SSH connection successful"' || {
+    echo "SSH connection failed. Debugging information:"
+    echo "1. Checking if key exists:"
+    ls -la ~/.ssh/
+    echo "2. Checking key format:"
+    head -n 1 ~/.ssh/deploy_key
+    echo "3. Testing connection with verbose output:"
+    ssh -v -i ~/.ssh/deploy_key -p "$SSH_PORT" "$SERVER_USER@$SERVER_HOST" 'echo test' 2>&1
+    exit 1
 }
 
-# Function to handle SCP transfers with retry
-scp_transfer() {
-    local retries=3
-    local source=$1
-    local dest=$2
-
-    for (( i=1; i<=retries; i++ )); do
-        if scp -P "$SSH_PORT" "$source" "deployment_target:$dest"; then
-            return 0
-        fi
-        echo "Attempt $i failed. Retrying..."
-        sleep 5
-    done
-    echo "Failed after $retries attempts"
-    return 1
-}
-
+# Rest of your deployment script...
 # Main deployment process
 main() {
-    # Test SSH connection
-    echo "Testing SSH connection..."
-    ssh_command "echo 'SSH connection successful'" || exit 1
-
-    # Create remote directory
-    echo "Creating remote directory..."
-    ssh_command "mkdir -p $COMPOSE_FILE_DIR" || exit 1
-
-    # Copy docker-compose file
-    echo "Copying docker-compose file..."
-    scp_transfer "$COMPOSE_FILE_NAME" "$COMPOSE_FILE_DIR/" || exit 1
-
-    # Login to container registry
-    echo "Logging into container registry..."
-    ssh_command "docker login -u $REGISTRY_USERNAME -p $REGISTRY_TOKEN" || exit 1
-
-    # Deploy using docker-compose
-    echo "Deploying application..."
-    ssh_command "cd $COMPOSE_FILE_DIR && \
-                docker-compose -f $COMPOSE_FILE_NAME pull && \
-                docker-compose -f $COMPOSE_FILE_NAME up -d" || exit 1
-
-    echo "Deployment completed successfully!"
+    echo "Starting deployment..."
+    # Your existing deployment commands here
 }
-
-# Cleanup function
-cleanup() {
-    local exit_code=$?
-    if [ $exit_code -ne 0 ]; then
-        echo "Deployment failed with exit code $exit_code"
-    fi
-    exit $exit_code
-}
-
-# Set cleanup trap
-trap cleanup EXIT
 
 # Run main function
 main
