@@ -48,6 +48,6 @@ remote_command "docker login $REGISTRY -u $REGISTRY_USERNAME -p $REGISTRY_TOKEN"
 remote_command "cd $COMPOSE_FILE_DIR && \
     export NODE_ENV=production && \
     docker-compose -f $COMPOSE_FILE_NAME pull && \
-    export NODE_ENV=production docker-compose -f $COMPOSE_FILE_NAME up -d"
+    NODE_ENV=production docker-compose -f $COMPOSE_FILE_NAME up -d"
 
 echo "Deployment completed successfully!!"
