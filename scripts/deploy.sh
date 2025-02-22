@@ -50,6 +50,12 @@ scp -P "$SSH_PORT" -i ~/.ssh/deploy_key \
     "$COMPOSE_FILE_NAME" \
     "$SERVER_USER@$SERVER_HOST:$COMPOSE_FILE_DIR/"
 
+export DB_HOST="db"
+export DB_PORT="5432"
+export DB_USER="postgres"
+export DB_PASSWORD="root"
+export DB_DATABASE="ccubank"
+
 # Log in to Docker registry
 remote_command "docker login $REGISTRY -u $REGISTRY_USERNAME -p $REGISTRY_TOKEN"
 
