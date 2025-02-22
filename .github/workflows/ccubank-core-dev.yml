@@ -72,6 +72,6 @@ jobs:
           chmod 777 ./scripts/setup_ssh.sh
           ./scripts/setup_ssh.sh
 
-      - name: Server deployment
-        run: bash ./scripts/deploy.sh
+#      - name: Server deployment
+#        run: bash ./scripts/deploy.sh
 
