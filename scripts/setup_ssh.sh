@@ -1,28 +1,13 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
 
-eval $(ssh-agent -s)
+REMOTE_HOST="207.148.76.131"
+REMOTE_USER="root"
 
-mkdir -p ~/.ssh
-chmod 700 ~/.ssh
+ssh ${REMOTE_USER}@${REMOTE_HOST} << EOF
+  # Commands to be executed on the remote server
+  echo "Connected successfully!"
+  hostnamectl
+  uptime
+EOF
 
-echo "$WEB_SERVER_SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-chmod 600 ~/.ssh/id_rsa
-
-ssh-add ~/.ssh/id_rsa
-
-SERVER_IP=$(echo "$WEB_SERVER_SSH_HOST" | cut -d '@' -f2)
-ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts 2>/dev/null
-
-echo "Debug: Checking SSH configuration"
-echo "SSH directory permissions:"
-ls -la ~/.ssh/
-echo "Key fingerprint:"
-ssh-keygen -lf ~/.ssh/id_rsa
-
-echo "Testing SSH connection with verbose logging..."
-ssh -v -o BatchMode=yes \
-    -o StrictHostKeyChecking=no \
-    -o PubkeyAuthentication=yes \
-    -o PasswordAuthentication=no \
-    -i ~/.ssh/id_rsa "$WEB_SERVER_SSH_HOST" "echo 'SSH connection successful'"
+echo "SSH session ended."
