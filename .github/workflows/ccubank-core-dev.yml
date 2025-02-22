@@ -70,6 +70,7 @@ jobs:
 
       - name: Remote to server and Deploy
         run: |
+          chmod +x ./scripts/init.sql
           chmod +x ./scripts/deploy.sh
           ./scripts/deploy.sh
 
