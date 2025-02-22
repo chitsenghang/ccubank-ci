@@ -13,7 +13,6 @@ SSH_PORT="${SSH_PORT:-22}"  # Default to port 22 if not specified
 COMPOSE_FILE_DIR="${COMPOSE_FILE_DIR:-./ccubank}"
 COMPOSE_FILE_NAME="${COMPOSE_FILE_NAME:-docker-compose.development.yaml}"
 
-# Debug: Print variables (masked)
 echo "Checking configuration..."
 echo "SERVER_HOST: ${SERVER_HOST}"
 echo "SERVER_USER: ${SERVER_USER}"
