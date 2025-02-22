@@ -50,15 +50,6 @@ scp -P "$SSH_PORT" -i ~/.ssh/deploy_key \
     "$COMPOSE_FILE_NAME" \
     "$SERVER_USER@$SERVER_HOST:$COMPOSE_FILE_DIR/"
 
-# Ensure the .env file exists
-if [ -f "$COMPOSE_FILE_DIR/.env" ]; then
-    export $(grep -v '^#' "$COMPOSE_FILE_DIR/.env" | xargs)
-else
-    echo ".env file not found! Please ensure it exists."
-    exit 1
-fi
-
-# Optionally, set fallback values for important environment variables
 export NODE_ENV="${NODE_ENV:-development}"
 export DB_USER="${DB_USER:-postgres}"
 export DB_PASSWORD="${DB_PASSWORD:-root}"
