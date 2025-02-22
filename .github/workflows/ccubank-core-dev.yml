@@ -56,6 +56,7 @@ jobs:
     runs-on: ubuntu-latest
 #    needs: build
     env:
+      REGISTRY: ${{secrets.REGISTRY}}
       REGISTRY_USERNAME: ${{secrets.REGISTRY_USERNAME}}
       REGISTRY_TOKEN: ${{secrets.REGISTRY_PASSWORD}}
       SERVER_HOST: ${{ secrets.SERVER_HOST }}
@@ -67,11 +68,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Remote to server
+      - name: Remote to server and Deploy
         run: |
-          chmod 777 ./scripts/setup_ssh.sh
-          ./scripts/setup_ssh.sh
-
-#      - name: Server deployment
-#        run: bash ./scripts/deploy.sh
+          chmod +x ./deploy.sh
+          ./deploy.sh
 
