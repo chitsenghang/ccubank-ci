@@ -6,7 +6,7 @@ SSH_PORT="${SSH_PORT:-22}"
 COMPOSE_FILE_NAME="${COMPOSE_FILE_NAME:-docker-compose.yaml}"
 
 # Setup SSH environment
-source ./ssh_setup.sh
+source ./scripts/ssh_setup.sh
 setup_ssh
 
 # Execute remote command function
