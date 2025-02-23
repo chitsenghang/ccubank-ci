@@ -50,7 +50,7 @@ remote_command "cd $COMPOSE_FILE_DIR && \
     export DB_USER=postgres && \
     export DB_PASSWORD=root && \
     export DB_DATABASE=ccubank && \
-    NODE_ENV=production docker-compose -f $COMPOSE_FILE_NAME down -v" && \
+    NODE_ENV=production docker-compose -f $COMPOSE_FILE_NAME down -v && \
     docker-compose -f $COMPOSE_FILE_NAME pull && \
     NODE_ENV=production docker-compose -f $COMPOSE_FILE_NAME up -d"
 
