@@ -1,7 +1,7 @@
 # Stage 1: Builder
 FROM node:20-alpine AS builder
 
-WORKDIR /app
+WORKDIR /app/temp
 
 COPY package.json yarn.lock ./
 
@@ -40,12 +40,13 @@ FROM node:20-alpine AS production
 
 WORKDIR /app
 
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json /app/
-COPY --from=builder /app/yarn.lock /app/
+COPY --from=builder /app/temp/dist ./dist
+COPY --from=builder /app/temp/node_modules ./node_modules
+COPY --from=builder /app/temp/package.json .
 
-ENV NODE_ENV=production
+RUN rm -rf /app/temp
+
+#ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 
 EXPOSE 8000
