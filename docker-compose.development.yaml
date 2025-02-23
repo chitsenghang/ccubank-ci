@@ -19,7 +19,6 @@ services:
       - .:/app
       - /app/node_modules
       - /app/dist
-      - /app/package.json
     networks:
       - app-network
     restart: unless-stopped
