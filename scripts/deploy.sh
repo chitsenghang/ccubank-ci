@@ -50,6 +50,7 @@ remote_command "cd $COMPOSE_FILE_DIR && \
     export DB_USER=$DB_USER && \
     export DB_PASSWORD=$DB_PASSWORD && \
     export DB_DATABASE=$DB_DATABASE && \
+    export NODE_ENV=production && \
     NODE_ENV=production docker-compose -f $COMPOSE_FILE_NAME down -v && \
     docker-compose -f $COMPOSE_FILE_NAME pull && \
     NODE_ENV=production docker-compose -f $COMPOSE_FILE_NAME up -d"
