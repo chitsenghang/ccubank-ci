@@ -20,6 +20,8 @@ remote_cmd "
            DB_PASSWORD=$DB_PASSWORD \
            DB_DATABASE=$DB_DATABASE \
            NODE_ENV=production && \
+    docker-compose -f $COMPOSE_FILE_NAME stop && \
+    docker-compose -f $COMPOSE_FILE_NAME rm -f && \
     docker-compose -f $COMPOSE_FILE_NAME pull && \
     docker-compose -f $COMPOSE_FILE_NAME up -d
 "
