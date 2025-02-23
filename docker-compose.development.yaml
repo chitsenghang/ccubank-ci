@@ -14,8 +14,8 @@ services:
     depends_on:
       - db
       - redis
-    volumes:
-      - .:/app
+#    volumes:
+#      - .:/app
     networks:
       - app-network
     restart: unless-stopped
