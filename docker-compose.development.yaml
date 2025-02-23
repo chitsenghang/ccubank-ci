@@ -16,9 +16,7 @@ services:
       - db
       - redis
     volumes:
-      - .:/app
-      - /app/node_modules
-      - /app/dist
+      - ./app:/app
     networks:
       - app-network
     restart: unless-stopped
