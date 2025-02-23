@@ -62,7 +62,7 @@ jobs:
       SERVER_HOST: ${{ secrets.SERVER_HOST }}
       SERVER_USER: ${{ secrets.SERVER_USER }}
       COMPOSE_FILE_DIR: ./ccubank
-      COMPOSE_FILE_NAME: docker-compose.development.yaml
+      COMPOSE_FILE_NAME: docker-compose.yaml
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       DB_USER: ${{secrets.DB_USER}}
       DB_PASSWORD: ${{secrets.DB_PASSWORD}}
@@ -73,6 +73,6 @@ jobs:
 
       - name: Remote to server and Deploy
         run: |
-          chmod +x ./scripts/deploy.sh
+          chmod +x ./scripts/ssh_setup.sh ./scripts/deploy.sh
           ./scripts/deploy.sh
 
