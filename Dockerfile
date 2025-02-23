@@ -1,15 +1,12 @@
-# Stage 1: Builder
 FROM node:20-alpine AS builder
 
 WORKDIR /app/temp
 
 COPY package.json yarn.lock ./
 
-# Install build dependencies
 RUN --mount=type=cache,target=/root/.cache \
     apk add --no-cache python3 g++ make git build-base
 
-# Install dependencies
 RUN --mount=type=cache,target=/root/.cache/yarn \
     yarn install \
     --prefer-offline \
@@ -17,13 +14,10 @@ RUN --mount=type=cache,target=/root/.cache/yarn \
     --frozen-lockfile \
     --production=false
 
-# Copy the rest of the application code
 COPY . .
 
-# Build the application
 RUN yarn build
 
-# Clean up and install production dependencies
 RUN --mount=type=cache,target=/root/.cache/yarn \
     rm -rf node_modules && \
     NODE_ENV=production yarn install \
@@ -32,10 +26,8 @@ RUN --mount=type=cache,target=/root/.cache/yarn \
     --non-interactive \
     --production=true
 
-# Clean up cache
 RUN rm -rf /root/.cache/yarn
 
-# Stage 2: Production
 FROM node:20-alpine AS production
 
 WORKDIR /app
@@ -46,7 +38,6 @@ COPY --from=builder /app/temp/package.json .
 
 RUN rm -rf /app/temp
 
-#ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 
 EXPOSE 8000

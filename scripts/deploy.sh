@@ -46,10 +46,10 @@ scp -P "$SSH_PORT" -i ~/.ssh/deploy_key \
 remote_command "docker login $REGISTRY -u $REGISTRY_USERNAME -p $REGISTRY_TOKEN"
 
 remote_command "cd $COMPOSE_FILE_DIR && \
-    export NODE_ENV=production && \
-    export DB_USER=postgres && \
-    export DB_PASSWORD=root && \
-    export DB_DATABASE=ccubank && \
+    docker system prune -af && \
+    export DB_USER=$DB_USER && \
+    export DB_PASSWORD=$DB_PASSWORD && \
+    export DB_DATABASE=$DB_DATABASE && \
     NODE_ENV=production docker-compose -f $COMPOSE_FILE_NAME down -v && \
     docker-compose -f $COMPOSE_FILE_NAME pull && \
     NODE_ENV=production docker-compose -f $COMPOSE_FILE_NAME up -d"
