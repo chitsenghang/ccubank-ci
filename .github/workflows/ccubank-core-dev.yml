@@ -64,6 +64,9 @@ jobs:
       COMPOSE_FILE_DIR: ./ccubank
       COMPOSE_FILE_NAME: docker-compose.development.yaml
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      DB_USER: ${{secrets.DB_USER}}
+      DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+      DB_DATABASE: ${{secrets.DB_DATABASE}}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
