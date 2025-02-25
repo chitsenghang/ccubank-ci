@@ -29,7 +29,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/chit-senghang/ccubank-core:latest
+          tags: ghcr.io/${{ github.repository_owner }}/ccubank-core:latest
 
       - name: Clean up docker
         run: docker system prune -f
@@ -39,6 +39,7 @@ jobs:
     needs: build
     env:
       REGISTRY_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+      REGISTRY_USER_NAME: ${{ github.repository_owner }}
       SERVER_HOST: ${{ secrets.SERVER_HOST }}
       SERVER_USER: ${{ secrets.SERVER_USER }}
       COMPOSE_FILE_DIR: ./ccubank
