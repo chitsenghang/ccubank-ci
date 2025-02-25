@@ -13,8 +13,9 @@ scp -P "$SSH_PORT" -i ~/.ssh/deploy_key \
     "$COMPOSE_FILE_NAME" \
     "$SERVER_USER@$SERVER_HOST:$COMPOSE_FILE_DIR/"
 remote_cmd "
-    echo $REGISTRY_TOKEN | docker login ghcr.io -u $REGISTRY_USER_NAME --password-stdin && \
+    docker login ghcr.io -u $REGISTRY_USER_NAME -p $REGISTRY_TOKEN && \
     cd $COMPOSE_FILE_DIR && \
+    docker system prune -af && \
     export DB_USER=$DB_USER \
            DB_PASSWORD=$DB_PASSWORD \
            DB_DATABASE=$DB_DATABASE \
