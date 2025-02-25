@@ -1,11 +1,9 @@
 name: ccubank-core deploy
 
 on:
-  pull_request:
+  push:
     branches:
-      - develop
-    type:
-      - close
+      - '**'
 
 jobs:
   build:

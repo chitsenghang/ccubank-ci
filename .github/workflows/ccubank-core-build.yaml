@@ -1,9 +1,11 @@
 name: ccubank-core build
 
 on:
-  push:
+  pull_request:
     branches:
-      - '**'
+      - develop
+    type:
+      - close
 
 jobs:
   lint:
