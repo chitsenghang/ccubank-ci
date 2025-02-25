@@ -21,7 +21,15 @@ const AppDataSource = new DataSource({
   entities: [__dirname + '/entity/*.entity{.ts,.js}'],
   migrations: [__dirname + '/database/**/*{.ts,.js}'],
   namingStrategy: new SnakeNamingStrategy(),
-  poolSize: 20
+  poolSize: 20,
+  cache: {
+    type: 'redis',
+    duration: 60000, //1min
+    options: {
+      host: process.env.REDIS_HOST,
+      port: +process.env.REDIS_PORT
+    }
+  }
 });
 
 AppDataSource.initialize()

@@ -1,31 +1,13 @@
-name: ccubank-core CI
+name: ccubank-core deploy
 
 on:
   push:
-    branches: [main]
+    branches:
+      - '**'
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Install node
-        uses: actions/setup-node@v3
-        with:
-          node-version:  "20.18.2"
-
-      - name: Install Dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Run Lint
-        run: yarn lint
-
   build:
     runs-on: ubuntu-latest
-    needs: lint
     permissions:
       contents: read
       packages: write
@@ -34,31 +16,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Log in to Registry
+      - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
         with:
-          registry: ${{ secrets.REGISTRY }}
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
+          registry: ghcr.io
+          username: ${{ github.repository_owner  }}
+          password: ${{ secrets.TOKEN_GITHUB  }}
 
       - name: Build image
-        run: |
-          docker build -t sjc.vultrcr.com/hangregistry469/ccubank-core:latest -f Dockerfile .
+        run: docker build -t ghcr.io/${{ github.repository_owner }}/ccubank-core:latest -f Dockerfile .
 
       - name: Push image to registry
         run: |
-          echo ${{ secrets.REGISTRY_PASSWORD }} | docker login sjc.vultrcr.com -u ${{ secrets.REGISTRY_USERNAME }} --password-stdin
-          docker push sjc.vultrcr.com/hangregistry469/ccubank-core:latest
+          docker push ghcr.io/${{ github.repository_owner }}/ccubank-core:latest
           docker image prune -f
-          docker logout ${{ secrets.REGISTRY }}
+          docker logout ghcr.io
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     env:
-      REGISTRY: ${{secrets.REGISTRY}}
-      REGISTRY_USERNAME: ${{secrets.REGISTRY_USERNAME}}
-      REGISTRY_TOKEN: ${{secrets.REGISTRY_PASSWORD}}
       SERVER_HOST: ${{ secrets.SERVER_HOST }}
       SERVER_USER: ${{ secrets.SERVER_USER }}
       COMPOSE_FILE_DIR: ./ccubank

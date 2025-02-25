@@ -29,6 +29,10 @@ export class BaseRepository<T>
     options: Omit<QueryOptions<T>, 'where'> = {}
   ): Promise<T> {
     const entity = await this.findOne({
+      cache: {
+        id: `user`,
+        milliseconds: 30000
+      },
       where: { id } as unknown as FindOptionsWhere<T>,
       select: options.select,
       relations: options.relations
