@@ -29,7 +29,9 @@ jobs:
           docker push ghcr.io/chitsenghang/ccubank-core:latest
 
       - name: Clean up docker
-        run: docker system prune -f
+        run: |
+          docker system prune -f
+          docker logout ghcr.io
 
   deploy:
     runs-on: ubuntu-latest

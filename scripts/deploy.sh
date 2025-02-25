@@ -8,7 +8,6 @@ setup_ssh
 remote_cmd() {
     ssh -p "$SSH_PORT" -i ~/.ssh/deploy_key "$SERVER_USER@$SERVER_HOST" "$1"
 }
-#remote_cmd "mkdir -p \"$COMPOSE_FILE_DIR\" && chmod 755 \"$COMPOSE_FILE_DIR\""
 scp -P "$SSH_PORT" -i ~/.ssh/deploy_key \
     "$COMPOSE_FILE_NAME" \
     "$SERVER_USER@$SERVER_HOST:$COMPOSE_FILE_DIR/"
