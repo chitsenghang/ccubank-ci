@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     env:
-      REGISTRY_TOKEN: {{ secrets.TOKEN_GITHUB }}
+      REGISTRY_TOKEN: ${{ secrets.TOKEN_GITHUB }}
       SERVER_HOST: ${{ secrets.SERVER_HOST }}
       SERVER_USER: ${{ secrets.SERVER_USER }}
       COMPOSE_FILE_DIR: ./ccubank
