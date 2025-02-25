@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: ghcr.io/ccubank-core:latest
+    image: ghcr.io/chit-senghang/ccubank-core:latest
     build:
       context: .
       dockerfile: Dockerfile

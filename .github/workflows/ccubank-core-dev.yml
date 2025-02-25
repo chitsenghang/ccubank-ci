@@ -29,7 +29,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/ccubank-core:latest
+          tags: ghcr.io/chit-senghang/ccubank-core:latest
 
       - name: Clean up docker
         run: docker system prune -f
