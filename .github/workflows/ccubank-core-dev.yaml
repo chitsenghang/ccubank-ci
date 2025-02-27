@@ -1,0 +1,57 @@
+name: ccubank-core deploy
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner  }}
+          password: ${{ secrets.TOKEN_GITHUB  }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t ghcr.io/chitsenghang/ccubank-core:latest .
+          docker push ghcr.io/chitsenghang/ccubank-core:latest
+
+      - name: Clean up docker
+        run: |
+          docker system prune -f
+          docker logout ghcr.io
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      REGISTRY_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+      REGISTRY_USER_NAME: ${{ github.repository_owner }}
+      SERVER_HOST: ${{ secrets.SERVER_HOST }}
+      SERVER_USER: ${{ secrets.SERVER_USER }}
+      COMPOSE_FILE_DIR: ./ccubank
+      COMPOSE_FILE_NAME: docker-compose.yaml
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      DB_USER: ${{secrets.DB_USER}}
+      DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+      DB_DATABASE: ${{secrets.DB_DATABASE}}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Remote to server and Deploy
+        run: |
+          chmod +x ./scripts/ssh_setup.sh ./scripts/deploy.sh
+          ./scripts/deploy.sh

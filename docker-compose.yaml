@@ -2,13 +2,13 @@ version: '3.8'
 
 services:
   app:
-    image: sjc.vultrcr.com/hangregistry469/ccubank-core:latest
+    image: ghcr.io/chitsenghang/ccubank-core:latest
     build:
       context: .
       dockerfile: Dockerfile
     container_name: ccubankwebsite
     env_file:
-      - '.env.${NODE_ENV}'
+      - '.env.production'
     ports:
       - '8000:8000'
     depends_on:
@@ -22,7 +22,7 @@ services:
     image: postgres:latest
     container_name: ccu_postgres
     env_file:
-      - '.env.${NODE_ENV}'
+      - '.env.production'
     ports:
       - '5432:5432'
     environment:
@@ -44,7 +44,7 @@ services:
     image: redis:latest
     container_name: ccu_redis
     env_file:
-      - '.env.${NODE_ENV}'
+      - '.env.production'
     ports:
       - '6379:6379'
     volumes:
