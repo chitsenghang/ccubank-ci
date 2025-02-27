@@ -30,7 +30,7 @@ jobs:
         run: yarn lint
 
   build:
-    if: github.event_name == 'pull_request' && github.base_ref == env.PRIMARY_BRANCH
+    if: github.event_name == 'pull_request' && github.base_ref == $PRIMARY_BRANCH
     runs-on: ubuntu-latest
     needs: lint
     permissions:
@@ -59,7 +59,7 @@ jobs:
           docker logout ghcr.io
 
   deploy:
-    if: github.event_name == 'pull_request' && github.base_ref == env.PRIMARY_BRANCH
+    if: github.event_name == 'pull_request' && github.base_ref == $PRIMARY_BRANCH
     runs-on: ubuntu-latest
     needs: build
     env:
