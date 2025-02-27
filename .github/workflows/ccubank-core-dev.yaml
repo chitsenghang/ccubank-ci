@@ -4,9 +4,30 @@ on:
   push:
     branches:
       - '**'
+  pull_request:
+    branches:
+      - develop
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version:  "20.18.2"
+
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run Lint
+        run: yarn lint
+
   build:
+    if: github.event_name == 'pull_request' && github.base_ref == 'develop'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -34,6 +55,7 @@ jobs:
           docker logout ghcr.io
 
   deploy:
+    if: github.event_name == 'pull_request' && github.base_ref == 'develop'
     runs-on: ubuntu-latest
     needs: build
     env:
