@@ -21,7 +21,7 @@ async function bootstrap() {
     })
   );
   const config = new DocumentBuilder()
-    .setTitle('API ccubank core api documentation')
+    .setTitle('API ccubank core api documentation 123')
     .setDescription('The api ccubank for website')
     .setVersion('1.0')
     .addBearerAuth()
