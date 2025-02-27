@@ -22,7 +22,7 @@ jobs:
 
       - name: Show repository name
         run:
-            echo "Repository...........: ${{ github.repository }}"
+            echo "Repository: ${{ github.repository }}"
 
       - name: Run Lint
         run: yarn lint
