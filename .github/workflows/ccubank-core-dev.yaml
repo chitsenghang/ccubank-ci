@@ -23,10 +23,16 @@ jobs:
           username: ${{ github.repository_owner  }}
           password: ${{ secrets.TOKEN_GITHUB  }}
 
+      # - name: Build and push Docker image
+      #   run: |
+      #     docker build -t ghcr.io/chitsenghang/ccubank-core:latest .
+      #     docker push ghcr.io/chitsenghang/ccubank-core:latest
       - name: Build and push Docker image
-        run: |
-          docker build -t ghcr.io/chitsenghang/ccubank-core:latest .
-          docker push ghcr.io/chitsenghang/ccubank-core:latest
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/chitsenghang/ccubank-core:latest .
 
       - name: Clean up docker
         run: |
