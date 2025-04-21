@@ -8,14 +8,14 @@ import {
 export class PhoneValidator implements ValidatorConstraintInterface {
   private phone: any;
 
-  validate(phone: string) {
+  validate(phone: string): boolean {
     // {8,9} limit min and max of phone number
     this.phone = phone;
     const regex = /^\+?(?:[0-9] ?){8,9}[0-9]$/;
     return regex.test(phone);
   }
 
-  defaultMessage() {
+  defaultMessage(): string {
     return `${this.phone} Invalid phone number`;
   }
 }

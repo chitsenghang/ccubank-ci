@@ -1,9 +1,11 @@
+import { join } from 'path';
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { loadEnvConfig } from './config/env.config';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { UserModule } from './user/user.module';
@@ -12,7 +14,7 @@ import { PermissionModule } from './permission/permission.module';
 import { RedisCacheModule } from './cache/cache.module';
 import { RequestContextModule } from './requestcontext/request-context.module';
 import AppDataSource from './ormconfig';
-import { AuditSubscriber } from './common/entities/subscriber/audit-subscriber';
+import { AuditSubscriber } from './common/entity/subscriber/audit-subscriber';
 import { AuditLogModule } from './audit-log/audit-log.module';
 import { UserRoleModule } from './userrole/user-role.module';
 import { RolePermissionModule } from './rolepermission/role-permission.module';
@@ -20,6 +22,14 @@ import { AuditLogMiddleware } from './common/middleware/logger/audit-log-middlew
 import { AuditLogService } from './audit-log/service/audit-log.service';
 import { AuditLogRepository } from './audit-log/repository/audit-log.repository';
 import { AuthMiddleware } from './common/guards/auth/auth.guard';
+import { MediaModule } from './media/media.module';
+import { ApplyCardModule } from './applycard/apply-card.module';
+import { LanguageModule } from './language/language.module';
+import { OtpModule } from './otp/otp.module';
+import { PageContentModule } from './pagecontent/page-content.module';
+import { ComplaintFeedbackModule } from './complaintfeedback/complaint-feedback.module';
+import { ExportModule } from './export/export.module';
+import { CardModule } from './applycard/card/card.module';
 
 @Module({
   imports: [
@@ -40,6 +50,10 @@ import { AuthMiddleware } from './common/guards/auth/auth.guard';
         subscribers: [AuditSubscriber]
       })
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'public'),
+      serveRoot: ''
+    }),
     AuthenticationModule,
     UserModule,
     RoleModule,
@@ -48,9 +62,16 @@ import { AuthMiddleware } from './common/guards/auth/auth.guard';
     RequestContextModule,
     AuditLogModule,
     UserRoleModule,
-    RolePermissionModule
+    RolePermissionModule,
+    MediaModule,
+    ApplyCardModule,
+    LanguageModule,
+    OtpModule,
+    PageContentModule,
+    ComplaintFeedbackModule,
+    ExportModule,
+    CardModule
   ],
-  controllers: [],
   providers: [
     AuditLogRepository,
     AuditLogService,
@@ -62,10 +83,18 @@ import { AuthMiddleware } from './common/guards/auth/auth.guard';
   ]
 })
 export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
+  private static readonly EXCLUDED_PATHS = [
+    { path: 'media', method: RequestMethod.ALL },
+    { path: 'media/:param*', method: RequestMethod.ALL },
+    { path: 'public/*', method: RequestMethod.GET },
+    { path: 'self/:param*', method: RequestMethod.ALL },
+    { path: 'auth/token', method: RequestMethod.POST }
+  ];
+
+  configure(consumer: MiddlewareConsumer): void {
     consumer
       .apply(AuthMiddleware, AuditLogMiddleware)
-      .exclude({ path: 'auth/token', method: RequestMethod.POST })
-      .forRoutes({ path: '*', method: RequestMethod.ALL });
+      .exclude(...AppModule.EXCLUDED_PATHS)
+      .forRoutes('*');
   }
 }

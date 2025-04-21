@@ -14,6 +14,6 @@ export class PermissionRepository
   }
 
   async findOnePermission(id: number, entityName: string): Promise<Permission> {
-    return this.findOneById(id, entityName);
+    return this.findOneByIdElseThrow(id, entityName);
   }
 }

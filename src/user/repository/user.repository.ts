@@ -29,11 +29,11 @@ export class UserRepository
   }
 
   async saveUser(createUserDto: CreateUserDto): Promise<User> {
-    return this.save(createUserDto);
+    return this.saveWithCreateEntity(createUserDto);
   }
 
   async findOneUserOrFail(id: number, entityName: string): Promise<User> {
-    return this.findOneById(id, entityName, {
+    return this.findOneByIdElseThrow(id, entityName, {
       relations: {
         userRole: { role: { rolePermission: { permission: true } } }
       }

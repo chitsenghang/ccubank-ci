@@ -11,7 +11,7 @@ export class AuthenticationController {
 
   @Get('health/check')
   getAuthHealthCheck(): string {
-    return 'OK..';
+    return 'OK';
   }
 
   @Throttle({ default: { limit: 1, ttl: +process.env.RATE_LIMIT_TTL } })

@@ -1,5 +1,5 @@
 import { Column, Entity } from 'typeorm';
-import { AuditBaseOnlyCreatedByAndCreatedAt } from '../../common/entities/audit-base-only-createdat-createdby.entity';
+import { AuditBaseOnlyCreatedByAndCreatedAt } from '../../common/entity/audit-base-only-createdat-createdby.entity';
 
 @Entity()
 export class AuditLog extends AuditBaseOnlyCreatedByAndCreatedAt {

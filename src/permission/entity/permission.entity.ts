@@ -8,7 +8,7 @@ import {
   TreeParent,
   Unique
 } from 'typeorm';
-import { AuditBaseEntity } from '../../common/entities/audit-base.entity';
+import { AuditBaseEntity } from '../../common/entity/audit-base.entity';
 import { RolePermission } from '../../rolepermission/entity/role-permission';
 
 @Entity()

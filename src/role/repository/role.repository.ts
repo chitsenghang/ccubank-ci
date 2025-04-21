@@ -43,7 +43,9 @@ export class RoleRepository
   }
 
   async findOneRole(id: number, entityName: string): Promise<Role> {
-    return this.findOneById(id, entityName, { ...this.selectRolePermission });
+    return this.findOneByIdElseThrow(id, entityName, {
+      ...this.selectRolePermission
+    });
   }
 
   async findRoleByIds(ids: number[]): Promise<Role[]> {

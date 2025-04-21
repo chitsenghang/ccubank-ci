@@ -12,7 +12,7 @@ import { RoleRepository } from '../repository/role.repository';
 import { Transactional } from '../../common/decorators/transactional.decorator';
 import { RolePermissionService } from '../../rolepermission/service/role-permission.service';
 import { Permission } from '../../permission/entity/permission.entity';
-import { IRoleService } from './role.serrvice.interface';
+import { IRoleService } from './role.service.interface';
 
 @Injectable()
 export class RoleService implements IRoleService {
@@ -28,7 +28,7 @@ export class RoleService implements IRoleService {
   @Transactional()
   async saveRole(createRoleDto: CreateRoleDto): Promise<Role> {
     let newRole: Role = this.roleRepository.create(createRoleDto);
-    newRole = await this.roleRepository.save(newRole);
+    newRole = await this.roleRepository.saveWithCreateEntity(newRole);
     if (createRoleDto.permissionIds && createRoleDto.permissionIds.length) {
       for (const permissionId of createRoleDto.permissionIds) {
         await this.permissionService.findOnePermission(permissionId);
@@ -54,7 +54,8 @@ export class RoleService implements IRoleService {
       this.ROLE
     );
     Object.assign(existingRole, updateRoleDto);
-    const savedRole: Role = await this.roleRepository.save(existingRole);
+    const savedRole: Role =
+      await this.roleRepository.saveWithCreateEntity(existingRole);
 
     if (updateRoleDto.permissionIds?.length) {
       const existingPermissions: RolePermission[] =

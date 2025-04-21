@@ -9,12 +9,6 @@ import { AuditLog } from '../../../audit-log/entity/audit-log.entity';
 
 @Injectable()
 export class AuditLogMiddleware implements NestMiddleware {
-  private readonly ignoreRoutes: string[] = [
-    '/login',
-    '/refresh-token',
-    '/logout'
-  ];
-
   constructor(
     private readonly auditLogService?: AuditLogService,
     private readonly userService?: UserService
@@ -49,19 +43,21 @@ export class AuditLogMiddleware implements NestMiddleware {
       );
 
       const userId: number = RequestContextService.getCurrentUserId();
-      await Promise.all([
-        this.userService.findOneUserOrFail(userId).then(
-          (user: User): Promise<AuditLog> =>
-            this.auditLogService.saveAuditLog({
-              requestMethod: method,
-              requestUrl: url,
-              requestJson: JSON.stringify(body),
-              ipAddress: ip,
-              resourceId: userId,
-              createdBy: user
-            })
-        )
-      ]);
+      if (method !== RequestMethodEnums.GET) {
+        await Promise.all([
+          this.userService.findOneUserOrFail(userId).then(
+            (user: User): Promise<AuditLog> =>
+              this.auditLogService.saveAuditLog({
+                requestMethod: method,
+                requestUrl: url,
+                requestJson: JSON.stringify(body),
+                ipAddress: ip,
+                resourceId: userId,
+                createdBy: user
+              })
+          )
+        ]);
+      }
     });
     next();
   }

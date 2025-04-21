@@ -30,20 +30,21 @@ export class ResponseMappingInterceptor<T extends ResponseData>
     next: CallHandler
   ): Observable<Response> {
     const Request: Request = context.switchToHttp().getRequest();
-    const method = Request.method;
+    const method: string = Request.method;
 
-    const offset = Number(Request.query.offset) || DEFAULT_PAGINATION_OFFSET;
-    const limit = Number(Request.query.limit) || DEFAULT_PAGINATION_LIMIT;
-    const keywords = (Request.query.keywords as string) ?? '';
+    const offset: number =
+      Number(Request.query.offset) || DEFAULT_PAGINATION_OFFSET;
+    const limit: number =
+      Number(Request.query.limit) || DEFAULT_PAGINATION_LIMIT;
+    const keywords: string = (Request.query.keywords as string) ?? '';
 
     return next.handle().pipe(
       map((payload: T | PaginationResponse<T>) => {
         if (isPaginationResponse(payload)) {
-          const totalCount = payload?.totalCount ?? 0;
-          const currentPage =
+          const totalCount: number = payload?.totalCount ?? 0;
+          const currentPage: number =
             offset >= totalCount ? 0 : Math.floor(offset / limit) + 1;
-          const totalPage = Math.ceil(totalCount / limit);
-          const lastPage = totalPage;
+          const lastPage: number = Math.ceil(totalCount / limit);
           const pageMeta: PageMeta = {
             keywords,
             totalCount,
@@ -64,37 +65,50 @@ export class ResponseMappingInterceptor<T extends ResponseData>
           };
           return mappedData;
         }
+
         switch (method) {
           case RequestMethodEnums.POST:
             if (Buffer.isBuffer(payload)) {
               return instanceToPlain(payload);
+            } else if (Array.isArray(payload)) {
+              return {
+                data: payload.map((item) => ({ id: item.id }))
+              };
             } else if (payload?.id) {
               return {
-                data: { id: payload?.id }
+                data: { id: payload.id }
               };
             } else {
               return {
                 data: instanceToPlain(payload) as T
               };
             }
+
           case RequestMethodEnums.PUT:
-          case RequestMethodEnums.PATCH: {
-            return {
-              data: { id: payload.id }
-            };
-          }
+          case RequestMethodEnums.PATCH:
+            if (Array.isArray(payload)) {
+              return {
+                data: payload.map((item) => ({ id: item.id }))
+              };
+            } else if (payload?.id) {
+              return {
+                data: { id: payload.id }
+              };
+            } else {
+              throw new ResourceInternalServerError(
+                'Payload ID is missing for PUT/PATCH request'
+              );
+            }
           case RequestMethodEnums.GET: {
             return {
               data: instanceToPlain(payload) as T
             };
           }
-
-          case RequestMethodEnums.DELETE: {
+          case RequestMethodEnums.DELETE:
             return;
-          }
 
           default:
-            throw new ResourceInternalServerError(`Interceptor gone wrong!`);
+            throw new ResourceInternalServerError(`Unknown method: ${method}`);
         }
       })
     );

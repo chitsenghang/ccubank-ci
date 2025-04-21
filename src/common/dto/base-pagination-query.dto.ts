@@ -8,7 +8,6 @@ import {
   IsString
 } from 'class-validator';
 import { AUDIT_BASE_ORDER_BY_OPTIONS } from '../constants/audit-base-orderby.constants';
-import { ExportDataTypeEnum } from '../export-file/common/enum/export.enum';
 import { PAGINATION_ORDER_DIRECTION } from '../enums/pagination-order-direction.enum';
 
 export class BasePaginationQueryDto {
@@ -32,17 +31,12 @@ export class BasePaginationQueryDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsIn(AUDIT_BASE_ORDER_BY_OPTIONS)
-  orderBy: any;
+  orderBy: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsEnum(PAGINATION_ORDER_DIRECTION)
   orderDirection?: PAGINATION_ORDER_DIRECTION;
-
-  @ApiPropertyOptional({ enum: ExportDataTypeEnum })
-  @IsOptional()
-  @IsEnum(ExportDataTypeEnum)
-  exportFileType?: ExportDataTypeEnum;
 }
 
 export enum BasePaginationQueryProps {

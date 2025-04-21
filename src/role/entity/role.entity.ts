@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany } from 'typeorm';
-import { AuditBaseEntity } from '../../common/entities/audit-base.entity';
+import { AuditBaseEntity } from '../../common/entity/audit-base.entity';
 import { UserRole } from '../../userrole/entity/user-role.entity';
 import { RolePermission } from '../../rolepermission/entity/role-permission';
 

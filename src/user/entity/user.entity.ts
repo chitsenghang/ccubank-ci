@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, Unique } from 'typeorm';
 import { Exclude } from 'class-transformer';
-import { AuditBaseEntity } from '../../common/entities/audit-base.entity';
+import { AuditBaseEntity } from '../../common/entity/audit-base.entity';
 import { UserRole } from '../../userrole/entity/user-role.entity';
 
 @Entity()

@@ -17,8 +17,6 @@ import { UserRoleService } from '../../userrole/service/user-role.service';
 import { Transactional } from '../../common/decorators/transactional.decorator';
 import { LoginDto } from '../../authentication/dto/login.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { CacheService } from '../../cache/cache.service';
-import { CacheCurrentUser } from '../../common/decorators/cache-current-user.decorator';
 import { IUserService } from './user.service.interface';
 
 @Injectable()
@@ -29,7 +27,6 @@ export class UserService implements IUserService {
 
   constructor(
     private readonly dataSource: DataSource,
-    public cacheService: CacheService,
     private readonly userRoleService: UserRoleService,
     private readonly roleService: RoleService,
     private readonly userRepository: UserRepository
@@ -107,7 +104,6 @@ export class UserService implements IUserService {
     return this.userRepository.findAllUser(pagination);
   }
 
-  @CacheCurrentUser()
   async findCurrentUser(): Promise<CurrentUserDto> {
     const user: User = await this.findOneUserOrFail(
       RequestContextService.getCurrentUserId()

@@ -5,7 +5,7 @@ import {
   Generated,
   PrimaryGeneratedColumn
 } from 'typeorm';
-import { DateTimeTransformer } from '../../common/entities/date-value-transformer';
+import { DateTimeTransformer } from '../../common/entity/date-value-transformer';
 
 @Entity()
 export class Otp {

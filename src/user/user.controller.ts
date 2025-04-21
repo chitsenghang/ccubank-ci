@@ -14,7 +14,6 @@ import { PaginationResponse } from '../common/interface/response.interface';
 import { ResponseMappingInterceptor } from '../common/interceptors/response-mapping.interceptor';
 import { CurrentUserDto } from '../common/dto/current-user.dto';
 import { PermissionGuard } from '../common/guards/permission/permission.guard';
-// import { CacheCurrentUser } from '../common/decorators/cache-current-user.decorator';
 import { UserService } from './service/user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entity/user.entity';

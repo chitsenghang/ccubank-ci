@@ -24,8 +24,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       Record<string, any>
     > = ctx.getResponse<Response>();
     let message: string = 'Internal server error';
-    const errors: any[] = [];
+    const errors: any = [];
     let status: number = 500;
+
     switch (exception.code) {
       case 2: {
         status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -109,24 +110,29 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     }
 
     if (exception instanceof BadRequestException) {
-      const respMsg = (exception.getResponse() as any).message;
-      if (Array.isArray(respMsg) && respMsg.length >= 1) {
-        const errMsg = respMsg[0];
-        if (errMsg instanceof ValidationError) {
+      const responseContent: any = exception.getResponse();
+      const respMsg: string = responseContent?.message;
+      const status: number = exception.getStatus();
+
+      if (Array.isArray(respMsg) && respMsg.length) {
+        const firstError: any = respMsg[0];
+
+        if (firstError instanceof ValidationError) {
           message = 'Validation Error';
-          status = exception.getStatus();
-          let nestedError: unknown;
-          for (const data of errMsg.children) {
-            for (const temp of data.children) {
-              nestedError = temp.constraints;
-            }
-          }
-          const constrains = Object.values(errMsg.constraints || nestedError);
-          constrains.forEach((constrain) =>
-            errors.push({
-              path: errMsg.property,
-              message: constrain
-            })
+          const extractConstraints = (error: ValidationError): string[] => {
+            const constraints: string[] = Object.values(
+              error.constraints || {}
+            );
+            return error.children.length
+              ? error.children.flatMap(extractConstraints)
+              : constraints;
+          };
+
+          errors.push(
+            ...extractConstraints(firstError).map((constraint) => ({
+              path: firstError.property,
+              message: constraint
+            }))
           );
 
           response.status(status).json({ message, errors });
@@ -134,13 +140,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         }
       }
 
-      if ((exception.getResponse() as any).message) {
-        message = 'Bad Request';
-        status = exception.getStatus();
-        errors.push({ message: exception.message });
-        response.status(status).json({ message, errors });
-        return;
-      }
+      message = 'Bad Request';
+      errors.push({ message: exception.message || respMsg });
+      response.status(status).json({ message, errors });
     }
 
     if (exception instanceof HttpException) {

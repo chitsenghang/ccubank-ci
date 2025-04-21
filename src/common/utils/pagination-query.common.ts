@@ -38,6 +38,7 @@ export async function GetPagination<
     relation?: FindOptionsRelations<T>;
     orderBy?: FindOptionsOrder<T>;
     mapFunction?: (input: T, index?: number) => V;
+    cache?: number | boolean | { id: any; milliseconds: number };
   }
 ) {
   const { offset, limit, keywords, orderBy } = paginationQuery;
@@ -56,17 +57,18 @@ export async function GetPagination<
   );
 
   const paginationOptions = {
-    skip: offset ?? DEFAULT_PAGINATION_OFFSET,
-    take: limit ?? DEFAULT_PAGINATION_LIMIT,
+    cache: options?.cache,
     where: handleFindOptionsWhere(searchKeywords, whereCondition),
     select: options?.select ?? {},
     order: sortableColumns,
     relations: options?.relation ?? {}
   };
 
-  // for export data all
+  paginationOptions['skip'] = offset ?? DEFAULT_PAGINATION_OFFSET;
+  paginationOptions['take'] = limit ?? DEFAULT_PAGINATION_LIMIT;
+
   if (!limit) {
-    paginationOptions.take = 0;
+    paginationOptions['take'] = 0;
   }
 
   try {
@@ -100,7 +102,6 @@ export function generateSortableColumnQuery(
   let sortQuery = '';
   let closeBracket = '';
 
-  // convert sort columns to script
   sortableColumns.forEach((column: string) => {
     sortQuery = sortQuery.concat(`{"${column}":`);
     closeBracket = closeBracket.concat('}');
@@ -168,10 +169,10 @@ export function generateQueryFullTextSearch(
   searchColumn: string,
   keyword: string
 ) {
-  const sortableColumns = searchColumn.split('.');
+  const sortableColumns: string[] = searchColumn.split('.');
 
-  let sortQuery = '';
-  let closeBracket = '';
+  let sortQuery: string = '';
+  let closeBracket: string = '';
 
   // convert sort columns to script
   sortableColumns.forEach((column: string) => {
@@ -184,44 +185,19 @@ export function generateQueryFullTextSearch(
 
 export function handleSortableColumns(orderBy: string) {
   if (!orderBy) {
-    return { id: PAGINATION_ORDER_DIRECTION.DESC };
+    return { id: PAGINATION_ORDER_DIRECTION.ASC };
   }
-  let obj: any;
 
-  orderBy.split(',').forEach((sortableColumns: string) => {
+  let obj: Record<string, string> = {};
+  orderBy.split(',').forEach((sortableColumns: string): void => {
     for (const sortField of sortableColumns.split(' ')) {
       const [sortColumn, sortDirection] = sortField.split(':');
-      const formattedColumn = handleCompanyStructureSortableColumns(sortColumn);
       const tempObj: string = generateSortableColumnQuery(
-        formattedColumn,
+        sortColumn,
         sortDirection
       );
       obj = _.merge(obj, JSON.parse(tempObj));
     }
   });
-
   return obj;
 }
-
-const companyStructureSortableColumns = {
-  'employee.location':
-    'employee.positions.companyStructureLocation.companyStructureComponent.name',
-  'employee.outlet':
-    'employee.positions.companyStructureOutlet.companyStructureComponent.name',
-  'employee.department':
-    'employee.positions.companyStructureDepartment.companyStructureComponent.name',
-  'employee.team':
-    'employee.positions.companyStructureTeam.companyStructureComponent.name',
-  'employee.position':
-    'employee.positions.companyStructurePosition.companyStructureComponent.name',
-  gender: 'gender.value'
-};
-
-const handleCompanyStructureSortableColumns = (columnDefinition: string) => {
-  const columnValue = companyStructureSortableColumns[columnDefinition];
-  if (columnValue) {
-    return columnValue;
-  } else {
-    return columnDefinition.replace('[0]', '');
-  }
-};

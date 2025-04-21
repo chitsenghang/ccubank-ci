@@ -96,6 +96,6 @@ export class AuditLogRepository
   async saveAuditLog(
     createAuditLogDtoDto: CreateAuditLogDtoDto
   ): Promise<AuditLog> {
-    return this.saveEntity(createAuditLogDtoDto);
+    return this.saveWithCreateEntity(createAuditLogDtoDto);
   }
 }

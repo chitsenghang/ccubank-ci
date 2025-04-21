@@ -19,15 +19,15 @@ export class UserRoleRepository
   }
 
   async saveAllUserRole(userRole: UserRole[]): Promise<UserRole[]> {
-    return this.save(userRole);
+    return this.saveAllWithCreateEntity(userRole);
   }
 
   async saveUserRole(userRole: UserRole): Promise<UserRole> {
-    return this.saveEntity(userRole);
+    return this.saveWithCreateEntity(userRole);
   }
 
   async findRolesByUserId(userId: number): Promise<UserRole[]> {
-    return this.find({
+    return this.findAll({
       where: { user: { id: userId } },
       relations: { role: true, user: true }
     });

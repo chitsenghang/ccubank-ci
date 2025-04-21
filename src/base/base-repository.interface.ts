@@ -30,12 +30,12 @@ export interface PaginationOptions<T> {
 
 export interface IBaseRepository<T extends ObjectLiteral> {
   /**
-   * Find entity by ID
+   * Find entity by ID if not exist throw exception.
    * @param id - Entity ID
    * @param entityName - Optional entity name for error messages
    * @param options - Query options excluding where clause
    */
-  findOneById(
+  findOneByIdElseThrow(
     id: number,
     entityName?: string,
     options?: Omit<QueryOptions<T>, 'where'>
@@ -63,19 +63,21 @@ export interface IBaseRepository<T extends ObjectLiteral> {
    * Create and save a new entity
    * @param data - Entity data
    */
-  saveEntity(data: DeepPartial<T>): Promise<T>;
+  saveWithCreateEntity(data: DeepPartial<T>): Promise<T>;
+
+  saveAllWithCreateEntity(data: DeepPartial<T>[]): Promise<T[]>;
 
   /**
-   * Update an existing entity
-   * @param id - Entity ID
-   * @param data - Updated entity data
-   */
-  updateEntity(id: number, data: DeepPartial<T>): Promise<T>;
-
-  /**
-   * Delete an entity
+   * Delete an entity if not exist throw exception.
    * @param id - Entity ID
    * @param entityName - Entity name for error messages
    */
-  deleteEntity(id: number, entityName: string): Promise<void>;
+  deleteElseThrow(id: number, entityName: string): Promise<void>;
+
+  /**
+   * Soft delete an entity if not exist throw exception.
+   * @param id - Entity ID
+   * @param entityName - Entity name for error messages
+   */
+  softDeleteElseThrow(id: number, entityName: string): Promise<void>;
 }

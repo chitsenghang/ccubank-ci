@@ -1,5 +1,5 @@
 import { Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { AuditBaseEntity } from '../../common/entities/audit-base.entity';
+import { AuditBaseEntity } from '../../common/entity/audit-base.entity';
 import { Permission } from '../../permission/entity/permission.entity';
 import { Role } from '../../role/entity/role.entity';
 

@@ -1,0 +1,4 @@
+export const MAIL_APPLY_CARD_TO = `MAIL_APPLY_CARD_TO`;
+export const MAIL_COMPLAINT_FEEDBACK_TO = `MAIL_COMPLAINT_FEEDBACK_TO`;
+export const MAIL_CC = `MAIL_CC`;
+export const MAIL_BCC = `MAIL_BCC`;

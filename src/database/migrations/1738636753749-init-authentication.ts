@@ -96,7 +96,9 @@ export class InitAuthentication1738636753749 implements MigrationInterface {
       CONSTRAINT "pk_user_role_id" PRIMARY KEY ("id"))`);
 
     await queryRunner.query(
-      `CREATE TABLE "otp" (
+      `
+      CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+      CREATE TABLE "otp" (
         "id" SERIAL NOT NULL, 
         "key" UUID NOT NULL DEFAULT uuid_generate_v4(), 
         "code" CHARACTER VARYING NOT NULL, 
